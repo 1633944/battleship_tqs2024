@@ -15,7 +15,7 @@ public class Tablero {
             for (int j = 0; j < tamaño; j++) {
                 matriz[i][j] = "~";
             }
-        }
+        }   
     }
 
     public boolean colocarBarco(int fila, int columna, int longitud, boolean horizontal) {
