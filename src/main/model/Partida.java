@@ -1,8 +1,13 @@
 package main.model;
 
 public class Partida {
-    private Jugador jugador1;
-    private Jugador jugador2;
+    private final Jugador jugador1;
+    private final Jugador jugador2;
+
+    public Partida() {
+        this.jugador1 = new Jugador("Jugador 1");
+        this.jugador2 = new Jugador("Jugador 2");
+    }
 
     public Jugador getJugador1() {
         return jugador1;
