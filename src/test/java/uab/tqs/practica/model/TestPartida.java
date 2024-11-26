@@ -1,7 +1,5 @@
 package uab.tqs.practica.model;
 
-import uab.tqs.practica.model.Partida;
-import uab.tqs.practica.model.Jugador;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

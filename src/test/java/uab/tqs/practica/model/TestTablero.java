@@ -1,9 +1,11 @@
 package uab.tqs.practica.model;
 
-import uab.tqs.practica.model.Tablero;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class TestTablero {
     private Tablero tablero;
@@ -126,5 +128,47 @@ public class TestTablero {
         assertEquals("Agua", tablero.recibirDisparo(1, 0));
         assertEquals("Agua", tablero.recibirDisparo(0, 2));
         assertEquals("Agua", tablero.recibirDisparo(1, 1));
+    }
+    
+    @Test
+    public void testImprimirTablero() {
+        Tablero tablero = new Tablero();
+
+        // Capturar la salida de consola
+        ByteArrayOutputStream salida = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(salida));
+
+        // Llamar al método
+        tablero.imprimirTablero();
+
+        // Restaurar la salida estándar
+        System.setOut(System.out);
+
+        // Construir la salida esperada usando saltos de línea del sistema
+        StringBuilder salidaEsperada = new StringBuilder("Tablero:");
+        String saltoLinea = System.lineSeparator();
+        for (int i = 0; i < 10; i++) {
+            salidaEsperada.append(saltoLinea).append("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
+        }
+
+        // Comparar la salida esperada con la salida real
+        assertEquals(salidaEsperada.toString().trim(), salida.toString().trim());
+    }
+    
+    @Test
+    public void testClonarTableroVacio() {
+        Tablero nuevoTablero = tablero.clonarTableroVacio();
+        assertNotSame(tablero, nuevoTablero);
+        assertArrayEquals(tablero.getMatriz(), nuevoTablero.getMatriz());
+    }
+    
+    @Test
+    public void testInvarianteTablero() {
+        tablero.colocarBarco(0, 0, 3, true);
+        assertEquals(tablero.getTamaño(), 10);
+
+        // Verificar que las listas internas de barcos y posiciones están sincronizadas
+        assertEquals(tablero.getMatriz().length, 10);
+        assertEquals(tablero.getMatriz()[0].length, 10);
     }
 }

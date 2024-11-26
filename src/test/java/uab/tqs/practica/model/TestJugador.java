@@ -1,11 +1,12 @@
 package uab.tqs.practica.model;
 
-import uab.tqs.practica.model.Barco;
-import uab.tqs.practica.model.Jugador;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class TestJugador {
 
@@ -132,4 +133,42 @@ public class TestJugador {
         jugador.recibirDisparo(0, 1);
         assertEquals(10, jugador.getBarcosRestantes());
     }
+    
+    @Test
+    void testActualizarTableroDisparo() {
+        jugador.colocarBarco(0, 0, 4, true);
+        String resultado = jugador.recibirDisparo(0, 0);  // "Tocado"
+        jugador.actualizarTableroDisparo(0, 0, resultado);
+        assertEquals("X", jugador.getTableroDisparo().getMatriz()[0][0]);
+
+        resultado = jugador.recibirDisparo(1, 0);  // "Agua"
+        jugador.actualizarTableroDisparo(1, 0, resultado);
+        assertEquals("O", jugador.getTableroDisparo().getMatriz()[1][0]);
+    }
+
+    @Test
+    void testColocarBarcoSuperpuesto() {
+        jugador.colocarBarco(0, 0, 3, true);
+        assertFalse(jugador.colocarBarco(0, 0, 3, true));  // Superposición con barco existente
+    }
+    
+    @Test
+    void testMostrarTablero() {
+        // Coloca un barco para tener algo que mostrar
+        jugador.colocarBarco(0, 0, 4, true);
+        
+        // Redirigir la salida estándar para capturar la salida del método
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        
+        // Llamamos a mostrarTablero y verificamos que se imprime correctamente
+        jugador.mostrarTablero();
+        
+        // Comprobar si la salida contiene lo esperado
+        assertTrue(outputStream.toString().contains("Tablero de Jugador1:"));
+        assertTrue(outputStream.toString().contains("B"));
+    }
+    
+    
+
 }

@@ -19,8 +19,10 @@ public class PartidaController {
 
     public void iniciarPartida() {
         configurarBarcos(partida.getJugador1());
+        limpiarConsola();
         configurarBarcos(partida.getJugador2());
-        iniciarJuego();
+        limpiarConsola();
+        iniciarJuego();  
     }
 
     private void configurarBarcos(Jugador jugador) {
@@ -32,6 +34,7 @@ public class PartidaController {
         boolean turnoJugador1 = true;
 
         while (true) {
+            limpiarConsola();
             Jugador jugadorAtacante = turnoJugador1 ? partida.getJugador1() : partida.getJugador2();
             Jugador jugadorDefensor = turnoJugador1 ? partida.getJugador2() : partida.getJugador1();
 
@@ -49,16 +52,24 @@ public class PartidaController {
         }
     }
 
-    private boolean disparar(Jugador jugadorAtacante, Jugador jugadorDefensor) {
+    public boolean disparar(Jugador jugadorAtacante, Jugador jugadorDefensor) {
+        vista.mostrarMensaje("Tu tablero de disparo:");
+        vista.mostrarTablero(jugadorAtacante.getTableroDisparo().getMatriz()); // Mostrar el tablero de disparo
+
         vista.mostrarMensaje("Fila del disparo:");
         int fila = scanner.nextInt();
         vista.mostrarMensaje("Columna del disparo:");
         int columna = scanner.nextInt();
 
         String resultado = jugadorDefensor.recibirDisparo(fila, columna);
-        vista.mostrarMensaje("Resultado del disparo: " + resultado);
-        vista.mostrarTablero(jugadorDefensor.getTablero().getMatriz());
+        jugadorAtacante.actualizarTableroDisparo(fila, columna, resultado); // Actualizar el tablero de disparo
 
+        vista.mostrarMensaje("Resultado del disparo: " + resultado);
         return resultado.equals("Tocado") || resultado.equals("Tocado y hundido");
     }
+
+    
+   public void limpiarConsola() {
+	   System.out.println("\n".repeat(100));
+   }
 }

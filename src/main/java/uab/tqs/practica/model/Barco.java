@@ -6,6 +6,9 @@ public class Barco {
     private final boolean[] impactos;
 
     public Barco(int longitud, boolean horizontal) {
+        if (longitud <= 0) {
+            throw new IllegalArgumentException("La longitud debe ser mayor a 0.");
+        }
         this.longitud = longitud;
         this.horizontal = horizontal;
         this.impactos = new boolean[longitud];
@@ -20,9 +23,10 @@ public class Barco {
     }
 
     public void registrarImpacto(int posicion) {
-        if (posicion >= 0 && posicion < impactos.length) {
-            impactos[posicion] = true;
+        if (posicion < 0 || posicion >= impactos.length) {
+            throw new IllegalArgumentException("Posición fuera del rango permitido.");
         }
+        impactos[posicion] = true;
     }
 
     public boolean estaHundido() {

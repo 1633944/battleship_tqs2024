@@ -9,12 +9,19 @@ public class Jugador {
     private final Tablero tablero;
     private final List<Barco> barcos;
     private int barcosRestantes;
+    private final Tablero tableroDisparo;
+
 
     public Jugador(String nombre) {
         this.nombre = nombre;
         this.tablero = new Tablero();
+        this.tableroDisparo = new Tablero(); // Tablero para registrar disparos
         this.barcos = new ArrayList<>();
         this.barcosRestantes = 12; // Total de casillas ocupadas por barcos (4 + 3 + 3 + 2)
+    }
+    
+    public Tablero getTableroDisparo() {
+        return tableroDisparo;
     }
 
     public void colocarBarcos() {
@@ -100,5 +107,13 @@ public class Jugador {
     public void mostrarTablero() {
         System.out.println("Tablero de " + nombre + ":");
         tablero.imprimirTablero();
+    }
+    
+    public void actualizarTableroDisparo(int fila, int columna, String resultado) {
+        if (resultado.equals("Tocado") || resultado.equals("Tocado y hundido")) {
+            tableroDisparo.getMatriz()[fila][columna] = "X";
+        } else if (resultado.equals("Agua")) {
+            tableroDisparo.getMatriz()[fila][columna] = "O";
+        }
     }
 }

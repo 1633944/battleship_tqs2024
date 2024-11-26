@@ -98,4 +98,11 @@ public class Tablero {
             System.out.println(); // Salto de línea después de cada fila
         }
     }
+    
+    public Tablero clonarTableroVacio() {
+        Tablero nuevoTablero = new Tablero();
+        nuevoTablero.inicializarTablero(); // Asegura que esté vacío
+        return nuevoTablero;
+    }
+    
 }
