@@ -7,7 +7,7 @@ public class Tablero {
     private final String[][] matriz;
     private final int tamaño;
     private final List<Barco> barcos;
-    private final List<int[]> posicionesBarcos; // Almacena [fila, columna] para cada barco
+    private final List<int[]> posicionesBarcos;
 
     public Tablero() {
         this.tamaño = 10;
@@ -26,24 +26,36 @@ public class Tablero {
     }
 
     public boolean colocarBarco(int fila, int columna, int longitud, boolean horizontal) {
+        if (fila < 0 || fila >= tamaño || columna < 0 || columna >= tamaño) {
+            throw new IllegalArgumentException("Las coordenadas del barco están fuera del tablero.");
+        }
+
         if (horizontal) {
-            if (columna + longitud > tamaño) return false;
+            if (columna + longitud > tamaño) {
+                throw new IllegalArgumentException("El barco se sale del tablero en la dirección horizontal.");
+            }
             for (int i = 0; i < longitud; i++) {
-                if (!matriz[fila][columna + i].equals("~")) return false;
+                if (!matriz[fila][columna + i].equals("~")) {
+                    throw new IllegalArgumentException("Hay un barco en la posición de colocación.");
+                }
             }
             for (int i = 0; i < longitud; i++) {
                 matriz[fila][columna + i] = "B";
             }
         } else {
-            if (fila + longitud > tamaño) return false;
+            if (fila + longitud > tamaño) {
+                throw new IllegalArgumentException("El barco se sale del tablero en la dirección vertical.");
+            }
             for (int i = 0; i < longitud; i++) {
-                if (!matriz[fila + i][columna].equals("~")) return false;
+                if (!matriz[fila + i][columna].equals("~")) {
+                    throw new IllegalArgumentException("Hay un barco en la posición de colocación.");
+                }
             }
             for (int i = 0; i < longitud; i++) {
                 matriz[fila + i][columna] = "B";
             }
         }
-        
+
         Barco barco = new Barco(longitud, horizontal);
         barcos.add(barco);
         posicionesBarcos.add(new int[]{fila, columna});
@@ -51,10 +63,13 @@ public class Tablero {
     }
 
     public String recibirDisparo(int fila, int columna) {
+        if (fila < 0 || fila >= tamaño || columna < 0 || columna >= tamaño) {
+            throw new IllegalArgumentException("Las coordenadas del disparo están fuera del tablero.");
+        }
+
         if (matriz[fila][columna].equals("B")) {
             matriz[fila][columna] = "X";
             
-            // Encontrar qué barco fue impactado y en qué posición
             for (int i = 0; i < barcos.size(); i++) {
                 Barco barco = barcos.get(i);
                 int[] pos = posicionesBarcos.get(i);
@@ -71,7 +86,7 @@ public class Tablero {
                     }
                 }
             }
-            return "Tocado"; // Por si acaso no se encuentra el barco
+            return "Tocado"; 
         } else if (matriz[fila][columna].equals("~")) {
             matriz[fila][columna] = "O";
             return "Agua";
@@ -88,21 +103,13 @@ public class Tablero {
         return tamaño;
     }
 
-    // Método para imprimir el tablero
     public void imprimirTablero() {
         System.out.println("Tablero:");
         for (int i = 0; i < tamaño; i++) {
             for (int j = 0; j < tamaño; j++) {
-                System.out.print(matriz[i][j] + " "); // Imprime cada celda del tablero
+                System.out.print(matriz[i][j] + " ");
             }
-            System.out.println(); // Salto de línea después de cada fila
+            System.out.println();
         }
     }
-    
-    public Tablero clonarTableroVacio() {
-        Tablero nuevoTablero = new Tablero();
-        nuevoTablero.inicializarTablero(); // Asegura que esté vacío
-        return nuevoTablero;
-    }
-    
 }

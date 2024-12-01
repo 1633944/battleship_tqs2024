@@ -16,23 +16,32 @@ public class TestBarco {
     }
 
     @Test
-    public void testCrearBarcoHorizontal() { //cn pe
+    public void testCrearBarcoHorizontal() {
         assertEquals(4, barcoHorizontal.getLongitud());
         assertTrue(barcoHorizontal.esHorizontal());
     }
 
     @Test
-    public void testCrearBarcoVertical() { //cn pe
+    public void testCrearBarcoVertical() {
         assertEquals(3, barcoVertical.getLongitud());
         assertFalse(barcoVertical.esHorizontal());
     }
 
     @Test
-    public void testImpactoFueraDeRango() { //cn vlvf
-        assertThrows(IllegalArgumentException.class, () -> barcoVertical.registrarImpacto(-1));
-        assertThrows(IllegalArgumentException.class, () -> barcoVertical.registrarImpacto(5));
+    public void testLongitudInvalida() {
+        assertThrows(IllegalArgumentException.class, () -> new Barco(0, true));
+        assertThrows(IllegalArgumentException.class, () -> new Barco(-1, false));
     }
 
+    @Test
+    public void testImpactoFueraDeRangoNegativo() {
+        assertThrows(IllegalArgumentException.class, () -> barcoVertical.registrarImpacto(-1));
+    }
+
+    @Test
+    public void testImpactoFueraDeRangoPositivo() {
+        assertThrows(IllegalArgumentException.class, () -> barcoVertical.registrarImpacto(5));
+    }
 
     @Test
     public void testImpactoEnPosicionesValidas() {
@@ -63,17 +72,9 @@ public class TestBarco {
         barcoVertical.registrarImpacto(2);
         assertTrue(barcoVertical.estaHundido());
     }
-    
-    @Test
-    public void testImpactoTodasMenosUna() {
-        barcoHorizontal.registrarImpacto(0);
-        barcoHorizontal.registrarImpacto(1);
-        barcoHorizontal.registrarImpacto(2);
-        assertFalse(barcoHorizontal.estaHundido());
-    }
 
     @Test
-    public void testImpactosAlternados() { //cn pe
+    public void testImpactosAlternados() {
         barcoHorizontal.registrarImpacto(0);
         barcoHorizontal.registrarImpacto(3);
         assertFalse(barcoHorizontal.estaHundido());
@@ -83,7 +84,7 @@ public class TestBarco {
     }
 
     @Test
-    public void testBarcoLongitudMinima() { //cn vlvf
+    public void testBarcoLongitudMinima() {
         Barco barcoCorto = new Barco(1, true);
         assertEquals(1, barcoCorto.getLongitud());
         barcoCorto.registrarImpacto(0);
@@ -97,21 +98,9 @@ public class TestBarco {
         barcoHorizontal.registrarImpacto(3);
         assertFalse(barcoHorizontal.estaHundido());
     }
-    
+
     @Test
-    public void testImpactosInvalidos() {
-        assertThrows(IllegalArgumentException.class, () -> barcoHorizontal.registrarImpacto(-1));
-        assertThrows(IllegalArgumentException.class, () -> barcoHorizontal.registrarImpacto(4));
-    }
-    
-    @Test
-    public void testLongitudInvalida() {
-        assertThrows(IllegalArgumentException.class, () -> new Barco(0, true));
-        assertThrows(IllegalArgumentException.class, () -> new Barco(-3, false));
-    }
-    
-    @Test
-    public void testPairwiseTestingCompleto() { //cn pt
+    public void testPairwiseTestingCompleto() {
         // Caso 1: longitud mínima, horizontal
         Barco barcoCortoHorizontal = new Barco(1, true);
         barcoCortoHorizontal.registrarImpacto(0);
@@ -132,7 +121,7 @@ public class TestBarco {
         barcoMedianoVertical.registrarImpacto(1);
         assertFalse(barcoMedianoVertical.estaHundido());
     }
-    
+
     @Test
     public void testEstadoNoModificadoPorEstaHundido() {
         barcoHorizontal.registrarImpacto(0);
@@ -141,5 +130,41 @@ public class TestBarco {
         assertEquals(hundidoAntes, hundidoDespues);
     }
 
+    @Test
+    public void testEstaHundidoAfterMultipleImpacts() {
+        barcoHorizontal.registrarImpacto(0);
+        barcoHorizontal.registrarImpacto(1);
+        barcoHorizontal.registrarImpacto(2);
+        barcoHorizontal.registrarImpacto(3);
+        assertTrue(barcoHorizontal.estaHundido());
+    }
 
+    @Test
+    public void testRegistrarImpactoOnSunkShip() {
+        barcoVertical.registrarImpacto(0);
+        barcoVertical.registrarImpacto(1);
+        barcoVertical.registrarImpacto(2);
+        assertTrue(barcoVertical.estaHundido());
+        barcoVertical.registrarImpacto(1); // Impact on already sunk ship
+        assertTrue(barcoVertical.estaHundido());
+    }
+
+    @Test
+    public void testRegistrarImpactoBoundaryValues() {
+        barcoHorizontal.registrarImpacto(0);
+        barcoHorizontal.registrarImpacto(3);
+        assertFalse(barcoHorizontal.estaHundido());
+    }
+
+    @Test
+    public void testBarcoMaxLength() {
+        Barco barcoLargo = new Barco(5, true);
+        assertEquals(5, barcoLargo.getLongitud());
+        barcoLargo.registrarImpacto(0);
+        barcoLargo.registrarImpacto(1);
+        barcoLargo.registrarImpacto(2);
+        barcoLargo.registrarImpacto(3);
+        barcoLargo.registrarImpacto(4);
+        assertTrue(barcoLargo.estaHundido());
+    }
 }

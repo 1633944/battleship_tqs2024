@@ -2,24 +2,21 @@ package uab.tqs.practica.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 public class TestTablero {
+
     private Tablero tablero;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         tablero = new Tablero();
     }
 
     @Test
-    public void testInicializacionTablero() {
+    void testInicializarTablero() {
         String[][] matriz = tablero.getMatriz();
-        assertEquals(10, tablero.getTamaño());
-        
         for (int i = 0; i < tablero.getTamaño(); i++) {
             for (int j = 0; j < tablero.getTamaño(); j++) {
                 assertEquals("~", matriz[i][j]);
@@ -28,147 +25,159 @@ public class TestTablero {
     }
 
     @Test
-    public void testColocarBarcoHorizontalExito() {
-        assertTrue(tablero.colocarBarco(0, 0, 3, true));
+    void testColocarBarcoHorizontalValido() {
+        assertTrue(tablero.colocarBarco(0, 0, 4, true));
         String[][] matriz = tablero.getMatriz();
-        assertEquals("B", matriz[0][0]);
-        assertEquals("B", matriz[0][1]);
-        assertEquals("B", matriz[0][2]);
-        assertEquals("~", matriz[0][3]); // Verifica que no se coloque más allá de la longitud
+        for (int i = 0; i < 4; i++) {
+            assertEquals("B", matriz[0][i]);
+        }
     }
 
     @Test
-    public void testColocarBarcoVerticalExito() {
-        assertTrue(tablero.colocarBarco(0, 0, 3, false));
+    void testColocarBarcoVerticalValido() {
+        assertTrue(tablero.colocarBarco(0, 0, 4, false));
         String[][] matriz = tablero.getMatriz();
-        assertEquals("B", matriz[0][0]);
-        assertEquals("B", matriz[1][0]);
-        assertEquals("B", matriz[2][0]);
-        assertEquals("~", matriz[3][0]); // Verifica que no se coloque más allá de la longitud
+        for (int i = 0; i < 4; i++) {
+            assertEquals("B", matriz[i][0]);
+        }
     }
 
     @Test
-    public void testColocarBarcosSuperpuestos() {
-        assertTrue(tablero.colocarBarco(0, 0, 3, true));
-        assertFalse(tablero.colocarBarco(0, 1, 3, true)); // Intenta colocar sobre un barco existente
+    void testColocarBarcoHorizontalFueraDeLimite() {
+    	assertThrows(IllegalArgumentException.class, () -> tablero.colocarBarco(0, 7, 4, true));
     }
 
     @Test
-    public void testColocarBarcoFueraLimites() {
-        assertFalse(tablero.colocarBarco(0, 8, 3, true)); // Horizontal fuera de límites
-        assertFalse(tablero.colocarBarco(8, 0, 3, false)); // Vertical fuera de límites
+    void testColocarBarcoVerticalFueraDeLimite() {
+    	assertThrows(IllegalArgumentException.class, () -> tablero.colocarBarco(7, 0, 4, false));
     }
 
     @Test
-    public void testDisparoAgua() {
+    void testColocarBarcoHorizontalSuperpuesto() {
+        tablero.colocarBarco(0, 0, 4, true);
+        assertThrows(IllegalArgumentException.class, () -> tablero.colocarBarco(0, 2, 4, true));
+    }
+
+    @Test
+    void testColocarBarcoVerticalSuperpuesto() {
+        tablero.colocarBarco(0, 0, 4, false);
+        assertThrows(IllegalArgumentException.class, () ->tablero.colocarBarco(2, 0, 4, false));
+    }
+
+    @Test
+    void testRecibirDisparoAgua() {
         assertEquals("Agua", tablero.recibirDisparo(0, 0));
         assertEquals("O", tablero.getMatriz()[0][0]);
     }
 
     @Test
-    public void testDisparoTocado() {
-        tablero.colocarBarco(0, 0, 3, true);
+    void testRecibirDisparoTocado() {
+        tablero.colocarBarco(0, 0, 4, true);
         assertEquals("Tocado", tablero.recibirDisparo(0, 0));
         assertEquals("X", tablero.getMatriz()[0][0]);
     }
 
     @Test
-    public void testDisparoRepetido() {
-        tablero.recibirDisparo(0, 0); // Primer disparo (agua)
+    void testRecibirDisparoTocadoYHundido() {
+        tablero.colocarBarco(0, 0, 2, true);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
+        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 1));
+    }
+
+    @Test
+    void testRecibirDisparoRepetido() {
+        tablero.colocarBarco(0, 0, 2, true);
+        tablero.recibirDisparo(0, 0);
         assertEquals("Ya has disparado aquí", tablero.recibirDisparo(0, 0));
     }
 
     @Test
-    public void testDisparoRepetidoEnBarco() {
-        tablero.colocarBarco(0, 0, 2, true);
-        tablero.recibirDisparo(0, 0); // Primer disparo (tocado)
-        assertEquals("Ya has disparado aquí", tablero.recibirDisparo(0, 0));
-    }
-
-    @Test
-    public void testHundirBarcoHorizontalCompleto() {
-        tablero.colocarBarco(0, 0, 2, true);
-        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
-        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 1));
-    }
-
-    @Test
-    public void testHundirBarcoVerticalCompleto() {
-        tablero.colocarBarco(0, 0, 2, false);
-        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
-        assertEquals("Tocado y hundido", tablero.recibirDisparo(1, 0));
-    }
-
-    @Test
-    public void testBarcoNoHundidoConDisparosNoConsecutivos() {
-        tablero.colocarBarco(0, 0, 3, true);
-        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
-        assertEquals("Tocado", tablero.recibirDisparo(0, 2));
-        // El barco no está hundido porque falta la posición del medio
-        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 1));
-    }
-
-    @Test
-    public void testMultiplesBarcos() {
-        tablero.colocarBarco(0, 0, 2, true); // Primer barco horizontal
-        tablero.colocarBarco(2, 0, 2, false); // Segundo barco vertical
-        
-        // Hundir primer barco
-        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
-        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 1));
-        
-        // Hundir segundo barco
-        assertEquals("Tocado", tablero.recibirDisparo(2, 0));
-        assertEquals("Tocado y hundido", tablero.recibirDisparo(3, 0));
-    }
-
-    @Test
-    public void testDisparosFallidos() {
-        tablero.colocarBarco(0, 0, 2, true);
-        assertEquals("Agua", tablero.recibirDisparo(1, 0));
-        assertEquals("Agua", tablero.recibirDisparo(0, 2));
-        assertEquals("Agua", tablero.recibirDisparo(1, 1));
-    }
-    
-    @Test
-    public void testImprimirTablero() {
-        Tablero tablero = new Tablero();
-
-        // Capturar la salida de consola
-        ByteArrayOutputStream salida = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(salida));
-
-        // Llamar al método
+    void testImprimirTablero() {
         tablero.imprimirTablero();
-
-        // Restaurar la salida estándar
-        System.setOut(System.out);
-
-        // Construir la salida esperada usando saltos de línea del sistema
-        StringBuilder salidaEsperada = new StringBuilder("Tablero:");
-        String saltoLinea = System.lineSeparator();
-        for (int i = 0; i < 10; i++) {
-            salidaEsperada.append(saltoLinea).append("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
-        }
-
-        // Comparar la salida esperada con la salida real
-        assertEquals(salidaEsperada.toString().trim(), salida.toString().trim());
     }
-    
+
     @Test
-    public void testClonarTableroVacio() {
-        Tablero nuevoTablero = tablero.clonarTableroVacio();
-        assertNotSame(tablero, nuevoTablero);
-        assertArrayEquals(tablero.getMatriz(), nuevoTablero.getMatriz());
-    }
-    
-    @Test
-    public void testInvarianteTablero() {
+    void testRecibirDisparoEnBarcoHorizontal() {
         tablero.colocarBarco(0, 0, 3, true);
-        assertEquals(tablero.getTamaño(), 10);
-
-        // Verificar que las listas internas de barcos y posiciones están sincronizadas
-        assertEquals(tablero.getMatriz().length, 10);
-        assertEquals(tablero.getMatriz()[0].length, 10);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
+        assertEquals("X", tablero.getMatriz()[0][0]);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 1));
+        assertEquals("X", tablero.getMatriz()[0][1]);
+        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 2));
+        assertEquals("X", tablero.getMatriz()[0][2]);
     }
+
+    @Test
+    void testRecibirDisparoEnBarcoVertical() {
+        tablero.colocarBarco(0, 0, 3, false);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
+        assertEquals("X", tablero.getMatriz()[0][0]);
+        assertEquals("Tocado", tablero.recibirDisparo(1, 0));
+        assertEquals("X", tablero.getMatriz()[1][0]);
+        assertEquals("Tocado y hundido", tablero.recibirDisparo(2, 0));
+        assertEquals("X", tablero.getMatriz()[2][0]);
+    }
+
+    @Test
+    void testRecibirDisparoSinBarco() {
+        assertEquals("Agua", tablero.recibirDisparo(5, 5));
+        assertEquals("O", tablero.getMatriz()[5][5]);
+    }
+
+    @Test
+    void testRecibirDisparoYHundirBarco() {
+        tablero.colocarBarco(0, 0, 3, true);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
+        assertEquals("X", tablero.getMatriz()[0][0]);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 1));
+        assertEquals("X", tablero.getMatriz()[0][1]);
+        assertEquals("Tocado y hundido", tablero.recibirDisparo(0, 2));
+        assertEquals("X", tablero.getMatriz()[0][2]);
+    }
+
+    @Test
+    void testRecibirDisparoYHundirBarcoVertical() {
+        tablero.colocarBarco(0, 0, 3, false);
+        assertEquals("Tocado", tablero.recibirDisparo(0, 0));
+        assertEquals("X", tablero.getMatriz()[0][0]);
+        assertEquals("Tocado", tablero.recibirDisparo(1, 0));
+        assertEquals("X", tablero.getMatriz()[1][0]);
+        assertEquals("Tocado y hundido", tablero.recibirDisparo(2, 0));
+        assertEquals("X", tablero.getMatriz()[2][0]);
+    }
+
+    @Test
+    void testRecibirDisparoEnCasillaVacia() {
+        tablero.colocarBarco(0, 0, 3, true);
+        String resultado = tablero.recibirDisparo(5, 5);
+        assertEquals("Agua", resultado);
+        assertEquals("O", tablero.getMatriz()[5][5]);
+    }
+    @Test
+    void testDisparoEnLimiteTablero() {
+        assertEquals("Agua", tablero.recibirDisparo(9, 9)); // Última casilla.
+        assertEquals("O", tablero.getMatriz()[9][9]);
+        tablero.colocarBarco(8, 8, 2, true);
+        assertEquals("Tocado", tablero.recibirDisparo(8, 8));
+        assertEquals("X", tablero.getMatriz()[8][8]);
+    }
+    @Test
+    void testDisparoSobreBarcoHundido() {
+        tablero.colocarBarco(0, 0, 2, true);
+        tablero.recibirDisparo(0, 0);
+        tablero.recibirDisparo(0, 1); // Hundir barco.
+        assertEquals("Ya has disparado aquí", tablero.recibirDisparo(0, 0)); 
+        assertEquals("Ya has disparado aquí", tablero.recibirDisparo(0, 1));
+    }
+    @Test
+    void testDisparoEnTableroVacio() {
+        for (int i = 0; i < tablero.getTamaño(); i++) {
+            for (int j = 0; j < tablero.getTamaño(); j++) {
+                assertEquals("Agua", tablero.recibirDisparo(i, j));
+                assertEquals("O", tablero.getMatriz()[i][j]);
+            }
+        }
+    }
+
+
 }

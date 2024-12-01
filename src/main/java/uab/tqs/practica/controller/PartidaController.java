@@ -11,10 +11,10 @@ public class PartidaController {
     private final ConsolaVista vista;
     private final Scanner scanner;
 
-    public PartidaController(Partida partida, ConsolaVista vista) {
+    public PartidaController(Partida partida, ConsolaVista vista, Scanner scanner) {
         this.partida = partida;
         this.vista = vista;
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
     }
 
     public void iniciarPartida() {
@@ -25,12 +25,12 @@ public class PartidaController {
         iniciarJuego();  
     }
 
-    private void configurarBarcos(Jugador jugador) {
+    void configurarBarcos(Jugador jugador) {
         jugador.colocarBarcos(); // Configuración manual de barcos
         vista.mostrarTablero(jugador.getTablero().getMatriz());
     }
 
-    private void iniciarJuego() {
+    void iniciarJuego() {
         boolean turnoJugador1 = true;
 
         while (true) {
@@ -68,8 +68,7 @@ public class PartidaController {
         return resultado.equals("Tocado") || resultado.equals("Tocado y hundido");
     }
 
-    
-   public void limpiarConsola() {
-	   System.out.println("\n".repeat(100));
-   }
+    public void limpiarConsola() {
+        System.out.println("\n".repeat(100));
+    }
 }

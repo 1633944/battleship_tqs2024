@@ -7,34 +7,29 @@ import java.util.Scanner;
 public class Jugador {
     private final String nombre;
     private final Tablero tablero;
+    private final Tablero tableroDisparo;
     private final List<Barco> barcos;
     private int barcosRestantes;
-    private final Tablero tableroDisparo;
 
-
-    public Jugador(String nombre) {
+    public Jugador(String nombre, Tablero tablero) {
         this.nombre = nombre;
-        this.tablero = new Tablero();
-        this.tableroDisparo = new Tablero(); // Tablero para registrar disparos
+        this.tablero = tablero;
+        this.tableroDisparo = new Tablero();
         this.barcos = new ArrayList<>();
-        this.barcosRestantes = 12; // Total de casillas ocupadas por barcos (4 + 3 + 3 + 2)
-    }
-    
-    public Tablero getTableroDisparo() {
-        return tableroDisparo;
+        this.barcosRestantes = 12;
     }
 
     public void colocarBarcos() {
         Scanner scanner = new Scanner(System.in);
-        
+
         System.out.println(nombre + ", coloca un barco de longitud 4:");
         colocarBarco(scanner, 4);
-        
+
         for (int i = 0; i < 2; i++) {
             System.out.println(nombre + ", coloca un barco de longitud 3:");
             colocarBarco(scanner, 3);
         }
-        
+
         System.out.println(nombre + ", coloca un barco de longitud 2:");
         colocarBarco(scanner, 2);
     }
@@ -43,21 +38,21 @@ public class Jugador {
         boolean colocado = false;
         while (!colocado) {
             mostrarTablero();
-            
+
             int fila = obtenerEntradaValida(scanner, "Fila (0-9): ", 0, 9);
             int columna = obtenerEntradaValida(scanner, "Columna (0-9): ", 0, 9);
             int orientacion = obtenerEntradaValida(scanner, "Orientación (0 para horizontal, 1 para vertical): ", 0, 1);
             boolean horizontal = (orientacion == 0);
 
             colocado = colocarBarco(fila, columna, longitud, horizontal);
-            
+
             if (!colocado) {
                 System.out.println("No se pudo colocar el barco. Intenta de nuevo.");
             }
         }
     }
 
-    private int obtenerEntradaValida(Scanner scanner, String mensaje, int min, int max) {
+    int obtenerEntradaValida(Scanner scanner, String mensaje, int min, int max) {
         int entrada;
         while (true) {
             System.out.print(mensaje);
@@ -96,6 +91,10 @@ public class Jugador {
         return tablero;
     }
 
+    public Tablero getTableroDisparo() {
+        return tableroDisparo;
+    }
+
     public int getBarcosRestantes() {
         return barcosRestantes;
     }
@@ -108,7 +107,7 @@ public class Jugador {
         System.out.println("Tablero de " + nombre + ":");
         tablero.imprimirTablero();
     }
-    
+
     public void actualizarTableroDisparo(int fila, int columna, String resultado) {
         if (resultado.equals("Tocado") || resultado.equals("Tocado y hundido")) {
             tableroDisparo.getMatriz()[fila][columna] = "X";
