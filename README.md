@@ -1,4 +1,4 @@
-# Proyecto: Batalla Naval - Pruebas Unitarias
+# Proyecto: Batalla Naval - Test i qualitat del software
 
 **Eric Chaves Sánchez** - 1633944  
 **Pau Leyva García** - 1636526  
