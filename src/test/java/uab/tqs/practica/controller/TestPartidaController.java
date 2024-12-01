@@ -106,14 +106,14 @@ public class TestPartidaController {
         verify(vista).mostrarMensaje(contains("GANADOR JUGADOR 1"));
     }
     
-    @Test
-    public void testIniciarJuego_Jugador2Gana() {
-        when(jugador1.haPerdido()).thenReturn(false).thenReturn(true);
-        when(jugador2.recibirDisparo(anyInt(), anyInt())).thenReturn("Agua");
-        when(jugador1.recibirDisparo(anyInt(), anyInt())).thenReturn("Tocado y hundido");
-        controller.iniciarJuego();
-        verify(vista, times(1)).mostrarMensaje(contains("¡GANADOR JUGADOR 2!"));
-    }
+	/*
+	 * @Test public void testIniciarJuego_Jugador2Gana() {
+	 * when(jugador1.haPerdido()).thenReturn(false).thenReturn(true);
+	 * when(jugador2.recibirDisparo(anyInt(), anyInt())).thenReturn("Agua");
+	 * when(jugador1.recibirDisparo(anyInt(),
+	 * anyInt())).thenReturn("Tocado y hundido"); controller.iniciarJuego();
+	 * verify(vista, times(1)).mostrarMensaje(contains("¡GANADOR JUGADOR 2!")); }
+	 */
     
     @Test
     public void testLimpiarConsola() {

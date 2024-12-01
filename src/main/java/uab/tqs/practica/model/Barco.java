@@ -9,8 +9,8 @@ public class Barco {
         if (longitud <= 0) {
             throw new IllegalArgumentException("La longitud del barco debe ser mayor que 0.");
         }
-        this.longitud = longitud;
         this.horizontal = horizontal;
+        this.longitud = longitud;
         this.impactos = new boolean[longitud];
     }
 
