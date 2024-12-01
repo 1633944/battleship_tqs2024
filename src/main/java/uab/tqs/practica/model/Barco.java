@@ -22,14 +22,14 @@ public class Barco {
         return horizontal;
     }
 
-    public void registrarImpacto(int posicion) {
-        if (posicion < 0 || posicion >= impactos.length) {
+    public void registrarImpacto(int posicion) {  
+        if (posicion < 0 || posicion >= impactos.length) {  //mirar si la posicion entrada, esta dentro del tablero.
             throw new IllegalArgumentException("Posición fuera de rango.");
         }
         impactos[posicion] = true;
     }
 
-    public boolean estaHundido() {
+    public boolean estaHundido() {  //mirar si el barco esta hundido
         for (boolean impacto : impactos) {
             if (!impacto) {
                 return false;

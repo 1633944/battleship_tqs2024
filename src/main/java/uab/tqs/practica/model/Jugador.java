@@ -16,7 +16,7 @@ public class Jugador {
         this.tablero = tablero;
         this.tableroDisparo = new Tablero();
         this.barcos = new ArrayList<>();
-        this.barcosRestantes = 12;
+        this.barcosRestantes = 12;  //1 barco de 4 + 2 barcos de 3 + 1 barco de 2 = 12
     }
 
     public void colocarBarcos() {
@@ -103,7 +103,7 @@ public class Jugador {
         return nombre;
     }
 
-    public void mostrarTablero() {
+    public void mostrarTablero() {  //imprimir tablero en cada turno
         System.out.println("Tablero de " + nombre + ":");
         tablero.imprimirTablero();
     }

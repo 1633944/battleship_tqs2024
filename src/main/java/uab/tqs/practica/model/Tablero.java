@@ -10,7 +10,7 @@ public class Tablero {
     private final List<int[]> posicionesBarcos;
 
     public Tablero() {
-        this.tamaño = 10;
+        this.tamaño = 10;  //matriz 10x10
         this.matriz = new String[tamaño][tamaño];
         this.barcos = new ArrayList<>();
         this.posicionesBarcos = new ArrayList<>();
@@ -26,7 +26,7 @@ public class Tablero {
     }
 
     public boolean colocarBarco(int fila, int columna, int longitud, boolean horizontal) {
-        if (fila < 0 || fila >= tamaño || columna < 0 || columna >= tamaño) {
+        if (fila < 0 || fila >= tamaño || columna < 0 || columna >= tamaño) {  
             throw new IllegalArgumentException("Las coordenadas del barco están fuera del tablero.");
         }
 
