@@ -4,7 +4,7 @@
 **Pau Leyva García** - 1636526  
 **Dimecres 10:30**  
 
-Este proyecto implementa un juego de **Batalla Naval** en Java y contiene pruebas unitarias para verificar el correcto funcionamiento de la lógica del juego, especialmente la clase `PartidaController`. Las pruebas unitarias utilizan la biblioteca **Mockito** para simular las dependencias y aislar el código bajo prueba.
+Este proyecto implementa un juego de **Batalla Naval** en Java y contiene pruebas unitarias para verificar el correcto funcionamiento de la lógica del juego, especialmente la clase PartidaController. Las pruebas unitarias utilizan la biblioteca **Mockito** para simular las dependencias y aislar el código bajo prueba.
 
 ## Descripción
 
@@ -22,8 +22,8 @@ El juego de **Batalla Naval** se juega entre dos jugadores, cada uno con un tabl
 La estructura del proyecto es la siguiente:
 
 
-- **controller**: Contiene la clase `PartidaController`, que gestiona el flujo del juego.
-- **model**: Incluye las clases `Partida`, `Jugador`, `Barco`, `Tablero`, que representan los elementos principales del juego.
+- **controller**: Contiene la clase PartidaController, que gestiona el flujo del juego.
+- **model**: Incluye las clases Partida, Jugador, Barco, Tablero, que representan los elementos principales del juego.
 - **view**: Contiene la interfaz para interactuar con el jugador a través de la consola.
 - **test**: Contiene las pruebas unitarias para garantizar el funcionamiento del controlador y la lógica del juego.
 
